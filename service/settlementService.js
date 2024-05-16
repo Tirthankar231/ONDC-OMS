@@ -24,11 +24,18 @@ const getAllSettlementDetails = async (limit, offset, bankName, branchName) => {
         if (branchName) {
             whereCondition.branchName = { [Op.iLike]: `%${branchName}%` };
         }
+        if (settlementType) {
+            whereCondition.settlementType = { [Op.iLike]: `%${settlementType}%` };
+        }
+        if (accountNo) {
+            whereCondition.accountNo = { [Op.iLike]: `%${accountNo}%` };
+        }
 
         const settlementDetails = await SettlementDetails.findAndCountAll({
             where: whereCondition,
             offset: offset,
             limit: limit,
+            order: [['createdAt', 'DESC']],
         });
         return settlementDetails;
     } catch (err) {

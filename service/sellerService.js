@@ -15,7 +15,7 @@ const createSeller = async (gst, pan, bppId, name) => {
   }
 };
 
-const getAllSellers = async (limit, offset, name, gst, pan) => {
+const getAllSellers = async (limit, offset, name, gst, pan, bpp_id) => {
   try {
     const whereCondition = {};
     if (name) {
@@ -27,11 +27,15 @@ const getAllSellers = async (limit, offset, name, gst, pan) => {
     if (pan) {
       whereCondition.pan = { [Op.iLike]: `%${pan}%` };
     }
+    if(bpp_id){
+      whereCondition.bpp_id = {[Op.iLike]: `%${bpp_id}`}
+    }
 
     const sellers = await Seller.findAndCountAll({
       where: whereCondition,
       offset: offset,
       limit: limit,
+      order: [['createdAt', 'DESC']],
     });
     return sellers;
   } catch (err) {

@@ -3,9 +3,9 @@ import orderService from '../service/orderService.js';
 import fs from 'fs';
 
 const createOrder = async (req, res) => {
-  const { orderId, currency, value, bff, collectedBy, paymentType } = req.body;
+  const { orderId, currency, value, bff, collectedBy, paymentType, state } = req.body;
   try {
-    const newOrder = await orderService.createOrder(orderId, currency, value, bff, collectedBy, paymentType);
+    const newOrder = await orderService.createOrder(orderId, currency, value, bff, collectedBy, paymentType, state);
     res.json(newOrder);
   } catch (err) {
     console.error('Error creating order', err);
@@ -15,8 +15,8 @@ const createOrder = async (req, res) => {
 
 const getAllOrders = async (req, res) => {
   try {
-    const { currency, limit, offset } = req.query;
-    const orders = await orderService.getAllOrders(currency, limit, offset);
+    const { orderId, value, bff, collectedBy, paymentType, state, currency, limit, offset, startTime, endTime } = req.query;
+    const orders = await orderService.getAllOrders(orderId, value, bff, collectedBy, paymentType,currency, state, limit, offset, startTime, endTime);
     res.json(orders);
   } catch (err) {
     console.error('Error getting orders', err);

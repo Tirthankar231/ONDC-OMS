@@ -6,23 +6,62 @@ import ExcelJS from 'exceljs';
 
 const Order = OrderModel(sequelize);
 
-const createOrder = async (orderId, currency, value, bff, collectedBy, paymentType) => {
+const createOrder = async (orderId, currency, value, bff, collectedBy, paymentType, state) => {
   try {
-    const newOrder = await Order.create({ orderId, currency, value, bff, collectedBy, paymentType });
+    const newOrder = await Order.create({ orderId, currency, value, bff, collectedBy, paymentType, state });
     return newOrder;
   } catch (err) {
     throw new Error(err);
   }
 };
 
-const getAllOrders = async (currency, limit, offset) => {
+const getAllOrders = async (orderId, currency, value, bff, collectedBy, paymentType, limit, offset, state, startTime, endTime) => {
   try {
-    const whereCondition = currency ? { currency: { [Op.iLike]: `%${currency}%` } } : {};
+    const whereCondition = {};
+    if (orderId) {
+      whereCondition.orderId = { [Op.iLike]: `%${orderId}%` };
+    }
+    if (currency) {
+      whereCondition.currency = { [Op.iLike]: `%${currency}%` };
+    }
+    if (value) {
+      whereCondition.value = { [Op.iLike]: `%${value}%` };
+    }
+    if (bff) {
+      whereCondition.bff = { [Op.iLike]: `%${bff}%` };
+    }
+    if (collectedBy) {
+      whereCondition.collectedBy = { [Op.iLike]: `%${collectedBy}%` };
+    }
+    if (paymentType) {
+      whereCondition.paymentType = { [Op.iLike]: `%${paymentType}%` };
+    }
+    if (state) {
+      whereCondition.state = { [Op.iLike]: `%${state}%` };
+    }
+    console.log("START", startTime);
+    console.log("END", endTime);
+    // Adding conditions for filtering by startTime and endTime
+    if (startTime && endTime) {
+      // Convert epoch timestamps to JavaScript Date objects
+      const startDate = parseInt(startTime) * 1000;
+      const endDate = parseInt(endTime) * 1000;
+
+      console.log("DATE ONE", startDate);
+      console.log("DATE TWO", endDate);
+      
+      whereCondition.createdAt = {
+        [Op.gte]: startDate,
+        [Op.lte]: endDate,
+    };
+      console.log("WHERE", whereCondition.createdAt);
+    }
 
     const orders = await Order.findAndCountAll({
       where: whereCondition,
       offset: offset,
       limit: limit,
+      order: [['createdAt', 'DESC']],
     });
     return orders;
   } catch (err) {

@@ -25,11 +25,18 @@ const getAllIssues = async (limit, offset, category, subCategory) => {
     if (subCategory) {
       whereCondition.subCategory = { [Op.iLike]: `%${subCategory}%` };
     }
+    if (issueStatus) {
+      whereCondition.issueStatus = { [Op.iLike]: `%${issueStatus}%` };
+    }
+    if (orderId) {
+      whereCondition.orderId = { [Op.iLike]: `%${orderId}%` };
+    }
 
     const issues = await Issue.findAndCountAll({
       where: whereCondition,
       offset: offset,
       limit: limit,
+      order: [['createdAt', 'DESC']],
     });
     return issues;
   } catch (err) {

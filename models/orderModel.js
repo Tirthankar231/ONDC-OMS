@@ -1,6 +1,5 @@
 // models/orderModel.js
 import { DataTypes } from 'sequelize';
-import Seller from './sellerModel.js';
 
 const Order = (sequelize) => {
     const OrderModel = sequelize.define('Order', {
@@ -33,27 +32,27 @@ const Order = (sequelize) => {
             type: DataTypes.STRING,
             allowNull: false,
         },
-        createdAt: {
-            type: DataTypes.DATE,
-            allowNull: false,
-            defaultValue: DataTypes.NOW,
-        },
         state: {
             type: DataTypes.STRING,
             allowNull: false,
-            defaultValue: 'pending',
+        },
+        createdAt: {
+            type: DataTypes.BIGINT,
+            allowNull: false,
+            defaultValue: sequelize.literal('extract(epoch from now()) * 1000'),
         },
         updatedAt: {
-            type: DataTypes.DATE,
+            type: DataTypes.BIGINT,
             allowNull: false,
-            defaultValue: DataTypes.NOW,
+            defaultValue: sequelize.literal('extract(epoch from now()) * 1000'),
         },
     }, {
         freezeTableName: true,
+        timestamps: true,
+        createdAt: 'createdAt',
+        updatedAt: 'updatedAt',
+        underscored: true,
     });
-
-    // Define association to Seller
-    OrderModel.belongsTo(Seller(sequelize), { foreignKey: 'id' });
 
     return OrderModel;
 };

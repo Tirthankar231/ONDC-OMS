@@ -14,11 +14,26 @@ const createReturn = async (returnId, amount, reason, orderId) => {
   }
 };
 
-const getAllReturns = async (limit, offset) => {
+const getAllReturns = async (returnId, amount, reason, orderId ,limit, offset) => {
   try {
+    const whereCondition = {};
+    if (returnId) {
+      whereCondition.returnId = { [Op.iLike]: `%${returnId}%` };
+    }
+    if (amount) {
+      whereCondition.amount = { [Op.iLike]: `%${amount}%` };
+    }
+    if (reason) {
+      whereCondition.reason = { [Op.iLike]: `%${reason}%` };
+    }
+    if (orderId) {
+      whereCondition.orderId = { [Op.iLike]: `%${orderId}%` };
+    }
     const returns = await Return.findAndCountAll({
+      where: whereCondition,
       offset: offset,
       limit: limit,
+      order: [['createdAt', 'DESC']],
     });
     return returns;
   } catch (err) {

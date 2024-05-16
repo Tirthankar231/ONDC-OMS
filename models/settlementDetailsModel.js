@@ -25,8 +25,22 @@ const SettlementDetails = (sequelize) => {
             type: DataTypes.STRING,
             allowNull: false,
         },
+        createdAt: {
+            type: DataTypes.BIGINT,
+            allowNull: false,
+            defaultValue: sequelize.literal('extract(epoch from now()) * 1000'),
+        },
+        updatedAt: {
+            type: DataTypes.BIGINT,
+            allowNull: false,
+            defaultValue: sequelize.literal('extract(epoch from now()) * 1000'),
+        },
     }, {
         freezeTableName: true,
+        timestamps: true,
+        createdAt: 'createdAt',
+        updatedAt: 'updatedAt',
+        underscored: true,
     });
     // Define association to Order
     SettlementDetailsModel.belongsTo(Order(sequelize), { foreignKey: 'id' });
