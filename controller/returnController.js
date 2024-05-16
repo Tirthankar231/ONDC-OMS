@@ -15,8 +15,8 @@ const createReturn = async (req, res) => {
 
 const getAllReturns = async (req, res) => {
   try {
-    const { limit, offset } = req.query;
-    const returns = await returnService.getAllReturns(limit, offset);
+    const { returnId, amount, reason, orderId,limit, offset } = req.query;
+    const returns = await returnService.getAllReturns(returnId, amount, reason, orderId,limit, offset);
     res.json(returns);
   } catch (err) {
     console.error('Error getting returns', err);
