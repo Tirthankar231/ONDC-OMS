@@ -15,8 +15,8 @@ const createSettlementDetails = async (req, res) => {
 
 const getAllSettlementDetails = async (req, res) => {
     try {
-        const { limit, offset, bankName, branchName } = req.query;
-        const settlementDetails = await settlementDetailsService.getAllSettlementDetails(limit, offset, bankName, branchName);
+        const { limit, offset, settlementType, accountNo, bankName, branchName } = req.query;
+        const settlementDetails = await settlementDetailsService.getAllSettlementDetails(limit, offset,settlementType, accountNo, bankName, branchName);
         res.json(settlementDetails);
     } catch (err) {
         console.error('Error getting settlement details', err);
