@@ -29,12 +29,25 @@ const Return = (sequelize) => {
                 key: 'id',
             },
         },
+        createdAt: {
+            type: DataTypes.BIGINT,
+            allowNull: false,
+            defaultValue: sequelize.literal('extract(epoch from now()) * 1000'),
+        },
+        updatedAt: {
+            type: DataTypes.BIGINT,
+            allowNull: false,
+            defaultValue: sequelize.literal('extract(epoch from now()) * 1000'),
+        },
     }, {
         freezeTableName: true,
+        timestamps: true,
+        createdAt: 'createdAt',
+        updatedAt: 'updatedAt',
+        underscored: true,
     });
-
     // Define association to Order
-    ReturnModel.belongsTo(Order(sequelize), { foreignKey: 'orderId' });
+    ReturnModel.belongsTo(Order(sequelize), { foreignKey: 'id' });
 
     return ReturnModel;
 };
