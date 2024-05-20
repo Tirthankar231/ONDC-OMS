@@ -14,7 +14,7 @@ const createReturn = async (returnId, amount, reason, orderId) => {
   }
 };
 
-const getAllReturns = async (returnId, amount, reason, orderId ,limit, offset) => {
+const getAllReturns = async (returnId, amount, reason, orderId ,limit, offset, startTime, endTime) => {
   try {
     const whereCondition = {};
     if (returnId) {
@@ -28,6 +28,21 @@ const getAllReturns = async (returnId, amount, reason, orderId ,limit, offset) =
     }
     if (orderId) {
       whereCondition.orderId = { [Op.iLike]: `%${orderId}%` };
+    }
+    // Adding conditions for filtering by startTime and endTime
+    if (startTime && endTime) {
+      // Convert epoch timestamps to JavaScript Date objects in milliseconds
+      const startDate = parseInt(startTime);
+      const endDate = parseInt(endTime);
+
+      if (startDate <= endDate) {
+        whereCondition.createdAt = {
+          [Op.gte]: startDate,
+          [Op.lte]: endDate,
+        };
+      } else {
+        throw new Error('startTime must be less than or equal to endTime');
+      }
     }
     const returns = await Return.findAndCountAll({
       where: whereCondition,

@@ -39,22 +39,20 @@ const getAllOrders = async (orderId, currency, value, bff, collectedBy, paymentT
     if (state) {
       whereCondition.state = { [Op.iLike]: `%${state}%` };
     }
-    console.log("START", startTime);
-    console.log("END", endTime);
     // Adding conditions for filtering by startTime and endTime
     if (startTime && endTime) {
-      // Convert epoch timestamps to JavaScript Date objects
-      const startDate = parseInt(startTime) * 1000;
-      const endDate = parseInt(endTime) * 1000;
+      // Convert epoch timestamps to JavaScript Date objects in milliseconds
+      const startDate = parseInt(startTime);
+      const endDate = parseInt(endTime);
 
-      console.log("DATE ONE", startDate);
-      console.log("DATE TWO", endDate);
-      
-      whereCondition.createdAt = {
-        [Op.gte]: startDate,
-        [Op.lte]: endDate,
-    };
-      console.log("WHERE", whereCondition.createdAt);
+      if (startDate <= endDate) {
+        whereCondition.createdAt = {
+          [Op.gte]: startDate,
+          [Op.lte]: endDate,
+        };
+      } else {
+        throw new Error('startTime must be less than or equal to endTime');
+      }
     }
 
     const orders = await Order.findAndCountAll({
