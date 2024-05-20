@@ -15,8 +15,8 @@ const createIssue = async (req, res) => {
 
 const getAllIssues = async (req, res) => {
   try {
-    const { limit, offset, category, subCategory, issueStatus, orderId } = req.query;
-    const issues = await issueService.getAllIssues(limit, offset, category, subCategory, issueStatus, orderId);
+    const { limit, offset, category, subCategory, issueStatus, orderId, startTime, endTime } = req.query;
+    const issues = await issueService.getAllIssues(limit, offset, category, subCategory, issueStatus, orderId, startTime, endTime);
     res.json(issues);
   } catch (err) {
     console.error('Error getting issues', err);

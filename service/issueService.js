@@ -15,7 +15,7 @@ const createIssue = async (category, subCategory, issueStatus, orderId) => {
   }
 };
 
-const getAllIssues = async (limit, offset, category, subCategory) => {
+const getAllIssues = async (limit, offset, category, subCategory, startTime, endTime) => {
   try {
     // Build the where condition for category and subCategory filters
     const whereCondition = {};
@@ -30,6 +30,21 @@ const getAllIssues = async (limit, offset, category, subCategory) => {
     }
     if (orderId) {
       whereCondition.orderId = { [Op.iLike]: `%${orderId}%` };
+    }
+    // Adding conditions for filtering by startTime and endTime
+    if (startTime && endTime) {
+      // Convert epoch timestamps to JavaScript Date objects in milliseconds
+      const startDate = parseInt(startTime);
+      const endDate = parseInt(endTime);
+
+      if (startDate <= endDate) {
+        whereCondition.createdAt = {
+          [Op.gte]: startDate,
+          [Op.lte]: endDate,
+        };
+      } else {
+        throw new Error('startTime must be less than or equal to endTime');
+      }
     }
 
     const issues = await Issue.findAndCountAll({

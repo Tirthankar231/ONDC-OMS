@@ -15,7 +15,7 @@ const createSettlementDetails = async (settlementType, accountNo, bankName, bran
     }
 };
 
-const getAllSettlementDetails = async (limit, offset, bankName, branchName) => {
+const getAllSettlementDetails = async (limit, offset, bankName, branchName, startTime, endTime) => {
     try {
         const whereCondition = {};
         if (bankName) {
@@ -30,7 +30,21 @@ const getAllSettlementDetails = async (limit, offset, bankName, branchName) => {
         if (accountNo) {
             whereCondition.accountNo = { [Op.iLike]: `%${accountNo}%` };
         }
-
+        // Adding conditions for filtering by startTime and endTime
+        if (startTime && endTime) {
+            // Convert epoch timestamps to JavaScript Date objects in milliseconds
+            const startDate = parseInt(startTime);
+            const endDate = parseInt(endTime);
+      
+            if (startDate <= endDate) {
+              whereCondition.createdAt = {
+                [Op.gte]: startDate,
+                [Op.lte]: endDate,
+              };
+            } else {
+              throw new Error('startTime must be less than or equal to endTime');
+            }
+          }
         const settlementDetails = await SettlementDetails.findAndCountAll({
             where: whereCondition,
             offset: offset,

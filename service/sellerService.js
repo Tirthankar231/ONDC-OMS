@@ -15,7 +15,7 @@ const createSeller = async (gst, pan, bppId, name) => {
   }
 };
 
-const getAllSellers = async (limit, offset, name, gst, pan, bpp_id) => {
+const getAllSellers = async (limit, offset, name, gst, pan, bpp_id, startTime, endTime) => {
   try {
     const whereCondition = {};
     if (name) {
@@ -29,6 +29,21 @@ const getAllSellers = async (limit, offset, name, gst, pan, bpp_id) => {
     }
     if(bpp_id){
       whereCondition.bpp_id = {[Op.iLike]: `%${bpp_id}`}
+    }
+    // Adding conditions for filtering by startTime and endTime
+    if (startTime && endTime) {
+      // Convert epoch timestamps to JavaScript Date objects in milliseconds
+      const startDate = parseInt(startTime);
+      const endDate = parseInt(endTime);
+
+      if (startDate <= endDate) {
+        whereCondition.createdAt = {
+          [Op.gte]: startDate,
+          [Op.lte]: endDate,
+        };
+      } else {
+        throw new Error('startTime must be less than or equal to endTime');
+      }
     }
 
     const sellers = await Seller.findAndCountAll({
