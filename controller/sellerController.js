@@ -15,8 +15,8 @@ const createSeller = async (req, res) => {
 
 const getAllSellers = async (req, res) => {
   try {
-    const { limit, offset, name, gst, pan, bpp_id } = req.query;
-    const sellers = await sellerService.getAllSellers(limit, offset, name, gst, pan, bpp_id);
+    const { limit, offset, name, gst, pan, bpp_id, startTime, endTime } = req.query;
+    const sellers = await sellerService.getAllSellers(limit, offset, name, gst, pan, bpp_id, startTime, endTime);
     res.json(sellers);
   } catch (err) {
     console.error('Error getting sellers', err);
