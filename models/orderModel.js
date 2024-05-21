@@ -63,7 +63,7 @@ const Order = (sequelize) => {
         OrderModel.belongsTo(models.Seller, { onDelete: 'CASCADE' });
         OrderModel.hasMany(models.Issue, { foreignKey: 'orderId', onDelete: 'CASCADE' });
         OrderModel.hasMany(models.Return, { foreignKey: 'orderId', onDelete: 'CASCADE' });
-        OrderModel.hasOne(models.SettlementDetails, { foreignKey: 'orderId', onDelete: 'CASCADE' });
+        OrderModel.hasOne(models.SettlementDetails);
     };
     
     return OrderModel;

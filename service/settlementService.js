@@ -15,7 +15,7 @@ const createSettlementDetails = async (settlementType, accountNo, bankName, bran
     }
 };
 
-const getAllSettlementDetails = async (limit, offset, bankName, branchName, startTime, endTime) => {
+const getAllSettlementDetails = async (limit, offset, bankName, branchName, settlementType, accountNo, startTime, endTime) => {
     try {
         const whereCondition = {};
         if (bankName) {

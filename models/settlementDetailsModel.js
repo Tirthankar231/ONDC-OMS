@@ -47,7 +47,7 @@ const SettlementDetails = (sequelize) => {
     });
 
     SettlementDetailsModel.associate = (models) => {
-        SettlementDetailsModel.belongsTo(models.Order, { foreignKey: 'orderId', onDelete: 'CASCADE' });
+        SettlementDetailsModel.belongsTo(models.Order);
     };
 
     return SettlementDetailsModel;

@@ -15,7 +15,7 @@ const createIssue = async (category, issueId, subCategory, issueStatus, orderId)
   }
 };
 
-const getAllIssues = async (limit, offset, category, issueId, subCategory, startTime, endTime) => {
+const getAllIssues = async (limit, offset, category, issueId, issueStatus, orderId, subCategory, startTime, endTime) => {
   try {
     // Build the where condition for category and subCategory filters
     const whereCondition = {};
@@ -58,7 +58,7 @@ const getAllIssues = async (limit, offset, category, issueId, subCategory, start
     });
     return issues;
   } catch (err) {
-    throw new Error('Error getting issues');
+    throw new Error(err);
   }
 };
 
