@@ -1,6 +1,5 @@
 // models/issueModel.js
 import { DataTypes } from 'sequelize';
-import Order from './orderModel.js';
 
 const Issue = (sequelize) => {
     const IssueModel = sequelize.define('Issue', {
@@ -8,6 +7,10 @@ const Issue = (sequelize) => {
             type: DataTypes.UUID,
             primaryKey: true,
             defaultValue: DataTypes.UUIDV1,
+        },
+        issueId: {
+            type: DataTypes.STRING,
+            allowNull: false,
         },
         category: {
             type: DataTypes.STRING,
@@ -24,10 +27,6 @@ const Issue = (sequelize) => {
         orderId: {
             type: DataTypes.UUID,
             allowNull: false,
-            references: {
-                model: Order(sequelize),
-                key: 'id',
-            },
         },
         createdAt: {
             type: DataTypes.BIGINT,
@@ -47,8 +46,9 @@ const Issue = (sequelize) => {
         underscored: true,
     });
 
-    // Define association to Order
-    IssueModel.belongsTo(Order(sequelize), { foreignKey: 'orderId' });
+    IssueModel.associate = (models) => {
+        IssueModel.belongsTo(models.Order, { foreignKey: 'orderId', onDelete: 'CASCADE' });
+    };
 
     return IssueModel;
 };
