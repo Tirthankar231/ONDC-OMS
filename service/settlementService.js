@@ -6,12 +6,12 @@ import ExcelJS from 'exceljs'
 
 const SettlementDetails = SettlementDetailsModel(sequelize);
 
-const createSettlementDetails = async (settlementType, accountNo, bankName, branchName) => {
+const createSettlementDetails = async (settlementType, accountNo, bankName, branchName, orderId) => {
     try {
-        const newSettlementDetails = await SettlementDetails.create({ settlementType, accountNo, bankName, branchName });
+        const newSettlementDetails = await SettlementDetails.create({ settlementType, accountNo, bankName, branchName, orderId });
         return newSettlementDetails;
     } catch (err) {
-        throw new Error('Error creating settlement details');
+        throw new Error(err);
     }
 };
 
@@ -57,6 +57,19 @@ const getAllSettlementDetails = async (limit, offset, bankName, branchName, star
     }
 };
 
+const getSettlementById = async (id) => {
+    try {
+      const settlement = await SettlementDetails.findOne({
+        where: {
+          id: id
+        }
+      });
+      return settlement;
+    } catch (err) {
+      throw new Error(err);
+    }
+};
+
 const exportToExcel = async (filePath) => {
     try {
         const settlementDetails = await SettlementDetails.findAll();
@@ -93,5 +106,6 @@ const exportToExcel = async (filePath) => {
 export default {
     createSettlementDetails,
     getAllSettlementDetails,
-    exportToExcel
+    exportToExcel,
+    getSettlementById
 };
