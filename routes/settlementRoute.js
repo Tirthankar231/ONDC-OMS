@@ -7,6 +7,7 @@ const router = express.Router();
 
 router.post('/settlement', settlementDetailsController.createSettlementDetails);
 router.get('/settlement', settlementDetailsController.getAllSettlementDetails);
+router.get('/settlement/:id', settlementDetailsController.getSettlementById);
 router.get('/settlement/exportExcel', settlementDetailsController.exportToExcel);
 
 export default router;

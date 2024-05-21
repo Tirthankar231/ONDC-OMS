@@ -6,6 +6,7 @@ const router = express.Router();
 
 router.post('/issue', issueController.createIssue);
 router.get('/issue', issueController.getAllIssues);
+router.get('/issue/:id', issueController.getIssueById);
 router.get('/issue/exportExcel', issueController.exportToExcel);
 
 export default router;
