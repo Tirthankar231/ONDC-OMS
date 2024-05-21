@@ -27,7 +27,7 @@ const getAllSettlementDetails = async (req, res) => {
 const getSettlementById = async(req, res)=> {
     try {
       const { id } = req.params;
-      const settlement = await settlementService.getReturnById(id);
+      const settlement = await settlementDetailsService.getSettlementById(id);
       res.json(settlement);
     } catch(err){
       res.status(500).json({ error: 'Internal Server Error'})
