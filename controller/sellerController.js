@@ -34,6 +34,17 @@ const getSellerById = async(req, res)=> {
   }
 }
 
+const getSalesReport = async (req, res) => {
+  try {
+      const { limit, offset, startDate, endDate } = req.query;
+      const salesReport = await sellerService.getSalesReport({ limit, offset, startDate, endDate });
+      res.json(salesReport);
+  } catch (error) {
+      console.error('Error fetching sales report:', error);
+      res.status(500).json({ error: 'Internal server error' });
+  }
+};
+
 const exportToExcel = async (req, res) => {
   const filePath = 'sellers.xlsx';
   try {
@@ -55,5 +66,6 @@ export default {
   createSeller,
   getAllSellers,
   exportToExcel,
-  getSellerById
+  getSellerById,
+  getSalesReport
 };

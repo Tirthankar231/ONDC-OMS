@@ -4,9 +4,9 @@ import SellerModel from '../models/sellerModel.js';
 import { Op } from 'sequelize';
 import ExcelJS from 'exceljs';
 import OrderModel from '../models/orderModel.js';
+import { models } from '../models/index.js';
 
-const Seller = SellerModel(sequelize);
-const Order = OrderModel(sequelize);
+const { Seller, Order } = models;
 
 const createSeller = async (gst, pan, bppId, name) => {
   try {
@@ -73,6 +73,65 @@ const getSellerById = async (id) => {
   }
 };
 
+const getSalesReport = async ({ limit, offset, startDate, endDate }) => {
+  try {
+    const sellers = await Seller.findAll({
+      include: [{
+        model: Order,
+        attributes: ['value', 'state'],
+        as: 'orders',
+        where: {
+          createdAt: {
+            [Op.between]: [startDate, endDate]
+          }
+        }
+      }],
+      attributes: ['id', 'name'],
+      limit,
+      offset
+    });
+
+    // Mapping between order states from the API and expected states in the function
+    const stateMapping = {
+      "In-progress": "inprogress",
+      "Cancelled": "cancelled",
+      "Completed": "confirmed",
+      "Accepted": "created"
+    };
+
+    const salesReport = sellers.map(seller => {
+      // Initialize order counts
+      const orderCounts = {
+        confirmed: 0,
+        cancelled: 0,
+        created: 0,
+        inprogress: 0
+      };
+
+      // Count orders based on their statuses
+      seller.orders.forEach(order => {
+        // Map the order state to the expected state name
+        const mappedState = stateMapping[order.state];
+        if (mappedState in orderCounts) {
+          orderCounts[mappedState]++;
+        }
+      });
+
+      return {
+        sellerId: seller.id,
+        sellerName: seller.name,
+        totalSales: seller.orders.reduce((total, order) => total + order.value, 0),
+        orderCounts: orderCounts
+      };
+    });
+
+    return salesReport;
+  } catch (err) {
+    console.error('Error fetching sales report:', err);
+    throw new Error('Error fetching sales report');
+  }
+};
+
 const exportToExcel = async (filePath) => {
   try {
     const sellers = await Seller.findAll();
@@ -111,4 +170,5 @@ export default {
   getAllSellers,
   exportToExcel,
   getSellerById,
+  getSalesReport
 };
