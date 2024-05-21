@@ -24,6 +24,16 @@ const getAllSellers = async (req, res) => {
   }
 };
 
+const getSellerById = async(req, res)=> {
+  try {
+    const { id } = req.params;
+    const seller = await sellerService.getSellerById(id);
+    res.json(seller);
+  } catch(err){
+    res.status(500).json({ error: 'Internal Server Error'})
+  }
+}
+
 const exportToExcel = async (req, res) => {
   const filePath = 'sellers.xlsx';
   try {
@@ -44,5 +54,6 @@ const exportToExcel = async (req, res) => {
 export default {
   createSeller,
   getAllSellers,
-  exportToExcel
+  exportToExcel,
+  getSellerById
 };
