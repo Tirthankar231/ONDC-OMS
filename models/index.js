@@ -5,6 +5,7 @@ import SellerModel from './sellerModel.js';
 import IssueModel from './issueModel.js';
 import ReturnModel from './returnModel.js';
 import SettlementDetailsModel from './settlementDetailsModel.js';
+import UserModel from './userModel.js';
 
 const models = {
     Order: OrderModel(sequelize),
@@ -12,6 +13,7 @@ const models = {
     Issue: IssueModel(sequelize),
     Return: ReturnModel(sequelize),
     SettlementDetails: SettlementDetailsModel(sequelize),
+    User: UserModel(sequelize),
 };
 
 // Define associations
