@@ -2,7 +2,7 @@
 import { DataTypes } from 'sequelize';
 
 const Seller = (sequelize) => {
-    const SellerModel = sequelize.define('Seller', {
+    const SellerModel = sequelize.define('sellers', {
         id: {
             type: DataTypes.UUID,
             primaryKey: true,
@@ -44,6 +44,10 @@ const Seller = (sequelize) => {
         updatedAt: 'updatedAt',
         underscored: true,
     });
+
+    SellerModel.associate = (models) => {
+        SellerModel.hasMany(models.Order);
+    };    
 
     return SellerModel;
 };
