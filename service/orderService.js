@@ -6,9 +6,9 @@ import ExcelJS from 'exceljs';
 
 const Order = OrderModel(sequelize);
 
-const createOrder = async (orderId, currency, value, bff, collectedBy, paymentType, state) => {
+const createOrder = async (orderId, currency, value, bff, collectedBy, paymentType, state, sellerId) => {
   try {
-    const newOrder = await Order.create({ orderId, currency, value, bff, collectedBy, paymentType, state });
+    const newOrder = await Order.create({ orderId, currency, value, bff, collectedBy, paymentType, state, sellerId });
     return newOrder;
   } catch (err) {
     throw new Error(err);
@@ -67,6 +67,41 @@ const getAllOrders = async (orderId, currency, value, bff, collectedBy, paymentT
   }
 };
 
+const getOrderById = async (id) => {
+  try {
+    const order = await Order.findOne({
+      where: {
+        id: id
+      },
+    });
+    return order;
+  } catch (err) {
+    throw new Error(err);
+  }
+};
+
+const getOrderStateCounts = async () => {
+  try {
+    // Count the total number of states
+    const stateCounts = await Order.count({
+      attributes: ['state'],
+      group: ['state']
+    });
+    // Prepare response data
+    const totalCount = stateCounts.reduce((total, stateCount) => {
+      return {
+        ...total,
+        [stateCount.state]: stateCount.count
+      };
+    }, {});
+
+    return totalCount;
+  } catch (error) {
+    console.error('Error counting order states:', error);
+    throw new Error('Error counting order states');
+  }
+};
+
 const exportToExcel = async (filePath) => {
   try {
     const orders = await Order.findAll();
@@ -107,5 +142,7 @@ const exportToExcel = async (filePath) => {
 export default {
   createOrder,
   getAllOrders,
-  exportToExcel
+  exportToExcel,
+  getOrderById,
+  getOrderStateCounts
 };
