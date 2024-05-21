@@ -3,8 +3,10 @@ import sequelize from '../config/db.js';
 import SellerModel from '../models/sellerModel.js';
 import { Op } from 'sequelize';
 import ExcelJS from 'exceljs';
+import OrderModel from '../models/orderModel.js';
 
 const Seller = SellerModel(sequelize);
+const Order = OrderModel(sequelize);
 
 const createSeller = async (gst, pan, bppId, name) => {
   try {
@@ -58,6 +60,19 @@ const getAllSellers = async (limit, offset, name, gst, pan, bpp_id, startTime, e
   }
 };
 
+const getSellerById = async (id) => {
+  try {
+    const seller = await Seller.findOne({
+      where: {
+        id: id
+      }
+    });
+    return seller;
+  } catch (err) {
+    throw new Error(err);
+  }
+};
+
 const exportToExcel = async (filePath) => {
   try {
     const sellers = await Seller.findAll();
@@ -94,5 +109,6 @@ const exportToExcel = async (filePath) => {
 export default {
   createSeller,
   getAllSellers,
-  exportToExcel
+  exportToExcel,
+  getSellerById,
 };

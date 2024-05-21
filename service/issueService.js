@@ -6,21 +6,24 @@ import ExcelJS from 'exceljs';
 
 const Issue = IssueModel(sequelize);
 
-const createIssue = async (category, subCategory, issueStatus, orderId) => {
+const createIssue = async (category, issueId, subCategory, issueStatus, orderId) => {
   try {
-    const newIssue = await Issue.create({ category, subCategory, issueStatus, orderId });
+    const newIssue = await Issue.create({ category, issueId, subCategory, issueStatus, orderId });
     return newIssue;
   } catch (err) {
     throw new Error(err);
   }
 };
 
-const getAllIssues = async (limit, offset, category, subCategory, startTime, endTime) => {
+const getAllIssues = async (limit, offset, category, issueId, subCategory, startTime, endTime) => {
   try {
     // Build the where condition for category and subCategory filters
     const whereCondition = {};
     if (category) {
       whereCondition.category = { [Op.iLike]: `%${category}%` };
+    }
+    if (issueId) {
+      whereCondition.issueId = { [Op.iLike]: `%${issueId}%` };
     }
     if (subCategory) {
       whereCondition.subCategory = { [Op.iLike]: `%${subCategory}%` };
@@ -59,6 +62,19 @@ const getAllIssues = async (limit, offset, category, subCategory, startTime, end
   }
 };
 
+const getIssueById = async (id) => {
+  try {
+    const issue = await Issue.findOne({
+      where: {
+        id: id
+      }
+    });
+    return issue;
+  } catch (err) {
+    throw new Error(err);
+  }
+};
+
 const exportToExcel = async (filePath) => {
   try {
     const issues = await Issue.findAll();
@@ -69,6 +85,7 @@ const exportToExcel = async (filePath) => {
     // Define the columns
     worksheet.columns = [
       { header: 'Category', key: 'category', width: 20 },
+      { header: 'IssueId', key: 'issueId', width: 20},
       { header: 'Subcategory', key: 'subCategory', width: 20 },
       { header: 'Issue Status', key: 'issueStatus', width: 20 },
       { header: 'Order ID', key: 'orderId', width: 20 }
@@ -78,6 +95,7 @@ const exportToExcel = async (filePath) => {
     issues.forEach(issue => {
       worksheet.addRow({
         category: issue.category,
+        issueId: issue.issueId,
         subCategory: issue.subCategory,
         issueStatus: issue.issueStatus,
         orderId: issue.orderId
@@ -95,5 +113,6 @@ const exportToExcel = async (filePath) => {
 export default {
   createIssue,
   getAllIssues,
-  exportToExcel
+  exportToExcel,
+  getIssueById
 };

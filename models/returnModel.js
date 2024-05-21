@@ -1,6 +1,5 @@
 // models/returnModel.js
 import { DataTypes } from 'sequelize';
-import Order from './orderModel.js';
 
 const Return = (sequelize) => {
     const ReturnModel = sequelize.define('Return', {
@@ -14,7 +13,7 @@ const Return = (sequelize) => {
             allowNull: false,
         },
         amount: {
-            type: DataTypes.STRING,
+            type: DataTypes.FLOAT,
             allowNull: false,
         },
         reason: {
@@ -24,10 +23,6 @@ const Return = (sequelize) => {
         orderId: {
             type: DataTypes.UUID,
             allowNull: false,
-            references: {
-                model: Order(sequelize),
-                key: 'id',
-            },
         },
         createdAt: {
             type: DataTypes.BIGINT,
@@ -46,8 +41,10 @@ const Return = (sequelize) => {
         updatedAt: 'updatedAt',
         underscored: true,
     });
-    // Define association to Order
-    ReturnModel.belongsTo(Order(sequelize), { foreignKey: 'id' });
+
+    ReturnModel.associate = (models) => {
+        ReturnModel.belongsTo(models.Order, { foreignKey: 'orderId', onDelete: 'CASCADE' });
+    };
 
     return ReturnModel;
 };

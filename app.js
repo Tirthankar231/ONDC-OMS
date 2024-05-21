@@ -5,9 +5,10 @@ import orderRoute from './routes/orderRoute.js';
 import settlementRoute from './routes/settlementRoute.js';
 import issueRoute from './routes/issueRoute.js';
 import returnRoute from './routes/returnRoute.js';
-import sequelize from './config/db.js';
+import migrationRoute from './routes/migrationRoute.js';
 import users from './lib/bootstrap/users.js';
 import { generateAccessToken } from './mddleware/auth.js';
+import { models } from './models/index.js';
 import dotenv from 'dotenv';
 dotenv.config()
 
@@ -31,9 +32,10 @@ app.use(orderRoute)
 app.use(settlementRoute)
 app.use(issueRoute)
 app.use(returnRoute)
+app.use(migrationRoute)
 
 // Synchronize models with the database
-sequelize.sync()
+models.sequelize.sync()
   .then(() => {
     console.log('Database synchronized');
     // Start the server

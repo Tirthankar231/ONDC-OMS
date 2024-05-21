@@ -3,9 +3,9 @@ import settlementDetailsService from '../service/settlementService.js';
 import fs from 'fs';
 
 const createSettlementDetails = async (req, res) => {
-    const { settlementType, accountNo, bankName, branchName } = req.body;
+    const { settlementType, accountNo, bankName, branchName, orderId } = req.body;
     try {
-        const newSettlementDetails = await settlementDetailsService.createSettlementDetails(settlementType, accountNo, bankName, branchName);
+        const newSettlementDetails = await settlementDetailsService.createSettlementDetails(settlementType, accountNo, bankName, branchName, orderId);
         res.json(newSettlementDetails);
     } catch (err) {
         console.error('Error creating settlement details', err);
@@ -23,6 +23,16 @@ const getAllSettlementDetails = async (req, res) => {
         res.status(500).json({ error: 'Internal Server Error' });
     }
 };
+
+const getSettlementById = async(req, res)=> {
+    try {
+      const { id } = req.params;
+      const settlement = await settlementService.getReturnById(id);
+      res.json(settlement);
+    } catch(err){
+      res.status(500).json({ error: 'Internal Server Error'})
+    }
+  }
 
 const exportToExcel = async (req, res) => {
     const filePath = 'settlementDetails.xlsx';
@@ -44,5 +54,6 @@ const exportToExcel = async (req, res) => {
 export default {
     createSettlementDetails,
     getAllSettlementDetails,
-    exportToExcel
+    exportToExcel,
+    getSettlementById
 };

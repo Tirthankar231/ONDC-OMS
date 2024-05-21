@@ -3,9 +3,9 @@ import orderService from '../service/orderService.js';
 import fs from 'fs';
 
 const createOrder = async (req, res) => {
-  const { orderId, currency, value, bff, collectedBy, paymentType, state } = req.body;
+  const { orderId, currency, value, bff, collectedBy, paymentType, state, sellerId } = req.body;
   try {
-    const newOrder = await orderService.createOrder(orderId, currency, value, bff, collectedBy, paymentType, state);
+    const newOrder = await orderService.createOrder(orderId, currency, value, bff, collectedBy, paymentType, state, sellerId);
     res.json(newOrder);
   } catch (err) {
     console.error('Error creating order', err);
@@ -21,6 +21,26 @@ const getAllOrders = async (req, res) => {
   } catch (err) {
     console.error('Error getting orders', err);
     res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
+const getOrderById = async(req, res)=> {
+  try {
+    const { id } = req.params;
+    const order = await orderService.getOrderById(id);
+    res.json(order);
+  } catch(err){
+    res.status(500).json({ error: 'Internal Server Error'})
+  }
+}
+
+const getOrderStateCountsController = async (req, res) => {
+  try {
+      const totalCount = await orderService.getOrderStateCounts();
+      res.json(totalCount);
+  } catch (error) {
+      console.error('Error in getOrderStateCountsController:', error);
+      res.status(500).json({ error: 'Internal server error' });
   }
 };
 
@@ -44,5 +64,7 @@ const exportToExcel = async (req, res) => {
 export default {
   createOrder,
   getAllOrders,
-  exportToExcel
+  exportToExcel,
+  getOrderById,
+  getOrderStateCountsController
 };

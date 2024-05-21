@@ -24,6 +24,16 @@ const getAllReturns = async (req, res) => {
   }
 };
 
+const getReturnById = async(req, res)=> {
+  try {
+    const { id } = req.params;
+    const returns = await returnService.getReturnById(id);
+    res.json(returns);
+  } catch(err){
+    res.status(500).json({ error: 'Internal Server Error'})
+  }
+}
+
 const exportToExcel = async (req, res) => {
   const filePath = 'returns.xlsx';
   try {
@@ -44,5 +54,6 @@ const exportToExcel = async (req, res) => {
 export default {
   createReturn,
   getAllReturns,
-  exportToExcel
+  exportToExcel,
+  getReturnById
 };

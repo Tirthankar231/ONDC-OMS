@@ -56,6 +56,19 @@ const getAllReturns = async (returnId, amount, reason, orderId ,limit, offset, s
   }
 };
 
+const getReturnById = async (id) => {
+  try {
+    const returns = await Return.findOne({
+      where: {
+        id: id
+      }
+    });
+    return returns;
+  } catch (err) {
+    throw new Error(err);
+  }
+};
+
 const exportToExcel = async (filePath) => {
   try {
     const returns = await Return.findAll();
@@ -92,5 +105,6 @@ const exportToExcel = async (filePath) => {
 export default {
   createReturn,
   getAllReturns,
-  exportToExcel
+  exportToExcel,
+  getReturnById
 };
