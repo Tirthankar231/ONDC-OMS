@@ -1,5 +1,4 @@
 // models/settlementDetailsModel.js
-import Order from './orderModel.js';
 import { DataTypes } from 'sequelize';
 
 const SettlementDetails = (sequelize) => {
@@ -25,6 +24,10 @@ const SettlementDetails = (sequelize) => {
             type: DataTypes.STRING,
             allowNull: false,
         },
+        orderId: {
+            type: DataTypes.UUID,
+            allowNull: false,
+        },
         createdAt: {
             type: DataTypes.BIGINT,
             allowNull: false,
@@ -42,8 +45,10 @@ const SettlementDetails = (sequelize) => {
         updatedAt: 'updatedAt',
         underscored: true,
     });
-    // Define association to Order
-    SettlementDetailsModel.belongsTo(Order(sequelize), { foreignKey: 'id' });
+
+    SettlementDetailsModel.associate = (models) => {
+        SettlementDetailsModel.belongsTo(models.Order, { foreignKey: 'orderId', onDelete: 'CASCADE' });
+    };
 
     return SettlementDetailsModel;
 };
